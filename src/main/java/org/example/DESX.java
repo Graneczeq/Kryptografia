@@ -1,5 +1,9 @@
 package org.example;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class DESX {
 
     static final int[] initPermTable = {
@@ -161,7 +165,50 @@ public class DESX {
         long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
         return permute(combined, inverseInitPermTable,64);
     };
+    public List<byte []> formatInput(String input){
+        List<byte []> output = new ArrayList<byte[]>();
+        byte[] format = input.getBytes();
+        for(int i = 0; i < input.length(); i+= 8){
+            byte [] temp = Arrays.copyOfRange(format, i, Math.min(format.length, i+8));
+            output.add(temp);
+        }
+        if(output.get(output.size()-1).length != 8){
+            addPadding(output.get(output.size()-1));
+        }
+        return output;
+    }
 
+    public byte[] initialPermutation(byte[] input){
+        byte[] output = new byte[8];
+        for(int i = 0; i < 64; i++){
+            int pos = initPermTable[i] - 1;
+            int bitIndex = 7- (pos % 8);
+            int bit = (input[pos/8] >> bitIndex) & 1;
+            if(bit == 1){
+                int out = i / 8;
+                int outBit = 7 - (i % 8);
+                output[out] |= (1 << outBit);
+            }
+        }
+        return output;
+    }
+
+    private byte[] addPadding(byte[] input){
+        int overflow = 8-(input.length % 8);
+        byte[] output = Arrays.copyOf(input, input.length + overflow);
+        return output;
+    }
+    byte[] XORInputs(byte[] a, byte[] b){
+        if(a.length!=b.length){
+            throw new IllegalArgumentException();
+        }
+        byte[] result = new byte[a.length];
+        for(int i=0;i<a.length;i++){
+            result[i]= (byte) (a[i] ^ b[i]);
+        }
+        return result;
+
+    }
     public static void main(String[] args) {
         DESX desx = new DESX();
         long key = 0x133457799BBCDFF1L;
