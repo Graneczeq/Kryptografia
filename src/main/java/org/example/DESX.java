@@ -20,6 +20,11 @@ public class DESX {
 
 
 
+    String keytext = "12345678";
+    byte[] key = keytext.getBytes();
+
+
+
     public List<byte []> formatInput(String input){
         List<byte []> output = new ArrayList<byte[]>();
         byte[] format = input.getBytes();
@@ -47,6 +52,7 @@ public class DESX {
         }
         return output;
     }
+
 
 
 
