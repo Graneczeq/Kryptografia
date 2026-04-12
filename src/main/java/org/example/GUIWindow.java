@@ -3,6 +3,9 @@ package org.example;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 
 public class GUIWindow extends JFrame {
     private JPanel Logs;
@@ -118,6 +121,32 @@ public class GUIWindow extends JFrame {
         fileCipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    byte[] inputBytes = Files.readAllBytes(Path.of(inputFileTextField.getText()));
+                    byte[] keyBytes = keyOutputPanel.getText().getBytes();
+                    long inputlong=0;
+                    long key1 = 0,key2 =0,key3 = 0;
+                    for (int i = 0; i < 8; i++) {
+                        key1 = (key1 << 8) | (keyBytes[i] & 0xFF);
+                    }
+                    for (int i = 0; i < 8; i++) {
+                        key2 = (key2 << 8) | (keyBytes[i+8] & 0xFF);
+                    }
+                    for (int i = 0; i < 8; i++) {
+                        key3 = (key3 << 8) | (keyBytes[i+16] & 0xFF);
+                    }
+                    for (int i = 0; i < inputBytes.length; i++) {
+                        inputlong = (inputlong << 8) | (inputBytes[i] & 0xFF);
+                    }
+
+
+                    long encrypted = desx.DESXencrypt(inputlong,desx.generateSubkeys(key2),key1,key3);
+
+                    // TODO: SZYFROWANIE I ODSZYFROWYWANIE PLIKÓW BINARNYCH
+
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
 
             }
         });
@@ -130,6 +159,12 @@ public class GUIWindow extends JFrame {
         fileSearchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                JFileChooser fileSearch = new JFileChooser();
+                int result = fileSearch.showOpenDialog(null);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    inputFileTextField.setText(fileSearch.getSelectedFile().getAbsolutePath());
+                }
 
             }
         });
