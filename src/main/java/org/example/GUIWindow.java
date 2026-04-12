@@ -8,7 +8,6 @@ public class GUIWindow extends JFrame {
     private JPanel Logs;
     private JPanel MainPanel;
     private JPasswordField uniqueKeyPanel;
-    private JTextField saltPanel;
     private JTextField keyOutputPanel;
     private JButton generateKeyButton;
     private JTabbedPane inputTabPane;
@@ -87,6 +86,7 @@ public class GUIWindow extends JFrame {
 
                 long encrypted = desx.DESXencrypt(inputlong,desx.generateSubkeys(key2),key1,key3);
                 outputTextField.setText(Long.toHexString(encrypted));
+                logsLabel.setText("Text message has been encrypted.");
 
             }
         });
@@ -113,6 +113,24 @@ public class GUIWindow extends JFrame {
 
                 long encrypted = desx.DESXdecrypt(inputlong,desx.generateSubkeys(key2),key1,key3);
                 outputTextField.setText(Long.toString(encrypted));
+            }
+        });
+        fileCipherButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        fileDecipherButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
+        fileSearchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
             }
         });
     }
