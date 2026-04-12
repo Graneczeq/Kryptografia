@@ -74,7 +74,7 @@
       <recent name="C:\Users\Kornel\Documents\GitHub\Kryptografia\src\main\java\org\example" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.App">
+  <component name="RunManager" selected="Application.DESX">
     <configuration name="App" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="org.example.App" />
       <module name="Kryptografia" />
@@ -133,9 +133,9 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.DESX" />
         <item itemvalue="Application.App" />
         <item itemvalue="Application.Window" />
-        <item itemvalue="Application.DESX" />
         <item itemvalue="JAR Application.Kryptografia-1.0.jar" />
         <item itemvalue="Application.Main" />
       </list>

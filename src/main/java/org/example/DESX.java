@@ -151,7 +151,7 @@ public class DESX {
         return (int) permute(substituted & 0xFFFFFFFFL, permutationTable, 32);
     }
 
-    public long encrypt(long message, long[] subkeys){
+    public long DESencrypt(long message, long[] subkeys){
         long block = permute(message, initPermTable,64);
 
         int left = (int) (block >>> 32);
@@ -165,6 +165,44 @@ public class DESX {
         long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
         return permute(combined, inverseInitPermTable,64);
     };
+
+    public long DESXencrypt(long message, long[] subkeys, long key1, long key3){
+
+        long keyed1 = message ^ key1;
+        long keyed2 = DESencrypt(keyed1,subkeys);
+        long keyed3 = keyed2 ^ key3;
+
+        return keyed3;
+    };
+    public long DESXdecrypt(long message, long[] subkeys, long key1, long key3){
+
+        long keyed3 = message ^ key3;
+        long keyed2 = DESdecrypt(keyed3,subkeys);
+        long keyed1 = keyed2 ^ key1;
+
+        return keyed1;
+    };
+
+
+
+    public long DESdecrypt(long message, long[] subkeys){
+        long block = permute(message, initPermTable,64);
+
+        int left = (int) (block >>> 32);
+        int right = (int) (block & 0xFFFFFFFFL);
+
+        for (int i = 15; i >= 0; i--){
+            int temp = right;
+            right = left ^ functionF(right,subkeys[i]);
+            left=temp;
+        }
+        long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
+        return permute(combined, inverseInitPermTable,64);
+    };
+
+
+
+
     public List<byte []> formatInput(String input){
         List<byte []> output = new ArrayList<byte[]>();
         byte[] format = input.getBytes();
@@ -212,6 +250,8 @@ public class DESX {
     public static void main(String[] args) {
         DESX desx = new DESX();
         long key = 0x133457799BBCDFF1L;
+        long key2 = 0x133457799BBCDFF1L;
+        long key3 = 0x133457799BBCDFF1L;
         long message = 0x0123456789ABCDEFL;
 
         System.out.println("Klucz:       " + Long.toHexString(key).toUpperCase());
@@ -219,9 +259,14 @@ public class DESX {
 
         long[] subkeys = desx.generateSubkeys(key);
 
-        long cipher = desx.encrypt(message, subkeys);
+        long cipher = desx.DESXencrypt(message, subkeys,key2,key3);
 
         System.out.println("Szyfrogram:  " + Long.toHexString(cipher).toUpperCase());
+        long decipher = desx.DESXdecrypt(cipher, subkeys,key2,key3);
+        System.out.println("Odszyfrowana wiadomość:  " + Long.toHexString(decipher).toUpperCase());
+        if (decipher == message) {
+            System.out.println("Działa poprawnie");
+        }
     }
 
 }
