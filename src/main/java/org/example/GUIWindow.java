@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 
 public class GUIWindow extends JFrame {
     private JPanel Logs;
@@ -41,7 +42,6 @@ public class GUIWindow extends JFrame {
                 String inputText = uniqueKeyPanel.getText();
                 byte[] byteText = inputText.getBytes();
                 byte[] keyBytes = new byte[24];
-
                 for (int i = 0; i < byteText.length && i < 24; i++) {
                     keyBytes[i] = byteText[i];
                 }
@@ -49,46 +49,41 @@ public class GUIWindow extends JFrame {
                     keyBytes[i] = (byte) (byteText[i % byteText.length] ^ (i * 31));
                 }
 
-                long key1 = 0,key2 =0,key3 = 0;
-                for (int i = 0; i < 8; i++) {
-                    key1 = (key1 << 8) | (keyBytes[i] & 0xFF);
-                }
-                for (int i = 0; i < 8; i++) {
-                    key2 = (key2 << 8) | (keyBytes[i+8] & 0xFF);
-                }
-                for (int i = 0; i < 8; i++) {
-                    key3 = (key3 << 8) | (keyBytes[i+16] & 0xFF);
-                }
+                long key1 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 0, 8));
+                long key2 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 9, 16));
+                long key3 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 17, 24));
+
 
 
                 keyOutputPanel.setText(Long.toHexString(key1).toUpperCase()+Long.toHexString(key2).toUpperCase()+Long.toHexString(key3).toUpperCase());
-                logsLabel.setText("Key generated.");
+
+                if (keyOutputPanel.getText().length()==48){
+                    logsLabel.setText("Key generated.");
+                }
+                else {logsLabel.setText("Keygen failed.");}
             }
         });
 
         cipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                byte[] inputBytes = inputTextField.getText().getBytes();
-                byte[] keyBytes = keyOutputPanel.getText().getBytes();
-                long inputlong=0;
-                long key1 = 0,key2 =0,key3 = 0;
-                for (int i = 0; i < 8; i++) {
-                    key1 = (key1 << 8) | (keyBytes[i] & 0xFF);
-                }
-                for (int i = 0; i < 8; i++) {
-                    key2 = (key2 << 8) | (keyBytes[i+8] & 0xFF);
-                }
-                for (int i = 0; i < 8; i++) {
-                    key3 = (key3 << 8) | (keyBytes[i+16] & 0xFF);
-                }
-                for (int i = 0; i < inputBytes.length; i++) {
-                    inputlong = (inputlong << 8) | (inputBytes[i] & 0xFF);
-                }
 
+                long key1 = desx.stringToLong(keyOutputPanel.getText().substring(0,16));
+                long key2 =desx.stringToLong(keyOutputPanel.getText().substring(16,32));
+                long key3 = desx.stringToLong(keyOutputPanel.getText().substring(32,48));
 
-                long encrypted = desx.DESXencrypt(inputlong,desx.generateSubkeys(key2),key1,key3);
-                outputTextField.setText(Long.toHexString(encrypted));
+                long[] message = desx.stringToLongArray(inputTextField.getText());
+                long[] output = new long[message.length];
+
+                for(int i = 0; i < output.length; i++) {
+                    long decrypted = desx.DESXencrypt(message[i],desx.generateSubkeys(key2),key1,key3);
+                    output[i]=decrypted;
+                }
+                String hexout= "";
+                for(int i = 0; i < output.length; i++) {
+                    hexout = hexout + Long.toHexString(output[i]);
+                }
+                outputTextField.setText(hexout);
                 logsLabel.setText("Text message has been encrypted.");
 
             }
@@ -96,26 +91,17 @@ public class GUIWindow extends JFrame {
         decipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                byte[] inputBytes = inputTextField.getText().getBytes();
-                byte[] keyBytes = keyOutputPanel.getText().getBytes();
-                long inputlong=0;
-                long key1 = 0,key2 =0,key3 = 0;
-                for (int i = 0; i < 8; i++) {
-                    key1 = (key1 << 8) | (keyBytes[i] & 0xFF);
-                }
-                for (int i = 0; i < 8; i++) {
-                    key2 = (key2 << 8) | (keyBytes[i+8] & 0xFF);
-                }
-                for (int i = 0; i < 8; i++) {
-                    key3 = (key3 << 8) | (keyBytes[i+16] & 0xFF);
-                }
-                for (int i = 0; i < inputBytes.length; i++) {
-                    inputlong = (inputlong << 8) | (inputBytes[i] & 0xFF);
+                long key1 = desx.stringToLong(keyOutputPanel.getText().substring(0,16));
+                long key2 = desx.stringToLong(keyOutputPanel.getText().substring(16,32));
+                long key3 = desx.stringToLong(keyOutputPanel.getText().substring(32,48));
+                long[] message = desx.HexStringToLongArray(inputTextField.getText());
+                long[] output = new long[message.length];
+                for(int i = 0; i < message.length; i++) {
+                    long decrypted = desx.DESXdecrypt(message[i],desx.generateSubkeys(key2),key1,key3);
+                    output[i]=decrypted;
                 }
 
-
-                long encrypted = desx.DESXdecrypt(inputlong,desx.generateSubkeys(key2),key1,key3);
-                outputTextField.setText(Long.toString(encrypted));
+                outputTextField.setText(desx.longArrayToString(output));
             }
         });
         fileCipherButton.addActionListener(new ActionListener() {
@@ -123,26 +109,33 @@ public class GUIWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 try {
                     byte[] inputBytes = Files.readAllBytes(Path.of(inputFileTextField.getText()));
-                    byte[] keyBytes = keyOutputPanel.getText().getBytes();
-                    long inputlong=0;
-                    long key1 = 0,key2 =0,key3 = 0;
-                    for (int i = 0; i < 8; i++) {
-                        key1 = (key1 << 8) | (keyBytes[i] & 0xFF);
+                    long key1 = desx.stringToLong(keyOutputPanel.getText().substring(0,16));
+                    long key2 = desx.stringToLong(keyOutputPanel.getText().substring(16,32));
+                    long key3 = desx.stringToLong(keyOutputPanel.getText().substring(32,48));
+                    long[] message = desx.bytesToLongArray(inputBytes);
+                    long[] output = new long[message.length];
+                    for(int i = 0; i < message.length; i++) {
+                        long encrypted = desx.DESXencrypt(message[i],desx.generateSubkeys(key2),key1,key3);
+                        output[i]=encrypted;
                     }
-                    for (int i = 0; i < 8; i++) {
-                        key2 = (key2 << 8) | (keyBytes[i+8] & 0xFF);
+                    byte[] encryptedBytes = new byte[output.length*8];
+                    for(int i = 0; i < output.length; i++) {
+                        byte[] byteRow = desx.longToBytes(output[i]);
+                        for(int j = 0; j < 8; j++) {
+                            encryptedBytes[j] = byteRow[j];
+                        }
                     }
-                    for (int i = 0; i < 8; i++) {
-                        key3 = (key3 << 8) | (keyBytes[i+16] & 0xFF);
+                    JFileChooser fileSearch = new JFileChooser();
+                    int selected = fileSearch.showSaveDialog(null);
+                    if (selected == JFileChooser.APPROVE_OPTION) {
+                        outputTextField.setText(fileSearch.getSelectedFile().getAbsolutePath());
+                        Files.write(Path.of(outputFileTextField.getText()), encryptedBytes);
+                        logsLabel.setText("Saved in" + fileSearch.getSelectedFile().getAbsolutePath());
                     }
-                    for (int i = 0; i < inputBytes.length; i++) {
-                        inputlong = (inputlong << 8) | (inputBytes[i] & 0xFF);
-                    }
+                    //TODO: ZAPIS JESZCZE NIE DZIAŁA
 
 
-                    long encrypted = desx.DESXencrypt(inputlong,desx.generateSubkeys(key2),key1,key3);
 
-                    // TODO: SZYFROWANIE I ODSZYFROWYWANIE PLIKÓW BINARNYCH
 
                 } catch (IOException ex) {
                     throw new RuntimeException(ex);
@@ -161,8 +154,8 @@ public class GUIWindow extends JFrame {
             public void actionPerformed(ActionEvent e) {
 
                 JFileChooser fileSearch = new JFileChooser();
-                int result = fileSearch.showOpenDialog(null);
-                if (result == JFileChooser.APPROVE_OPTION) {
+                int selected = fileSearch.showOpenDialog(null);
+                if (selected == JFileChooser.APPROVE_OPTION) {
                     inputFileTextField.setText(fileSearch.getSelectedFile().getAbsolutePath());
                 }
 

@@ -1,5 +1,6 @@
 package org.example;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -201,41 +202,6 @@ public class DESX {
     };
 
 
-
-
-    public List<byte []> formatInput(String input){
-        List<byte []> output = new ArrayList<byte[]>();
-        byte[] format = input.getBytes();
-        for(int i = 0; i < input.length(); i+= 8){
-            byte [] temp = Arrays.copyOfRange(format, i, Math.min(format.length, i+8));
-            output.add(temp);
-        }
-        if(output.get(output.size()-1).length != 8){
-            addPadding(output.get(output.size()-1));
-        }
-        return output;
-    }
-
-    public byte[] initialPermutation(byte[] input){
-        byte[] output = new byte[8];
-        for(int i = 0; i < 64; i++){
-            int pos = initPermTable[i] - 1;
-            int bitIndex = 7- (pos % 8);
-            int bit = (input[pos/8] >> bitIndex) & 1;
-            if(bit == 1){
-                int out = i / 8;
-                int outBit = 7 - (i % 8);
-                output[out] |= (1 << outBit);
-            }
-        }
-        return output;
-    }
-
-    private byte[] addPadding(byte[] input){
-        int overflow = 8-(input.length % 8);
-        byte[] output = Arrays.copyOf(input, input.length + overflow);
-        return output;
-    }
     byte[] XORInputs(byte[] a, byte[] b){
         if(a.length!=b.length){
             throw new IllegalArgumentException();
@@ -247,6 +213,100 @@ public class DESX {
         return result;
 
     }
+
+    long[] stringToLongArray(String input){
+        byte[] inputBytes = input.getBytes();
+        long[] output = new long[(input.length()+7)/8];
+
+        for(int i = 0; i < output.length; i++){
+            long elem = 0;
+            for(int j = 0; j < 8; j++){
+                elem <<= 8;
+                int index = i * 8 + j;
+                if (index < inputBytes.length) {
+                    elem |= (inputBytes[index] & 0xFF);
+                }
+            }
+            output[i] = elem;
+        }
+        return output;
+    }
+
+    long[] bytesToLongArray(byte[] input){
+        long[] output = new long[(input.length+7)/8];
+
+        for(int i = 0; i < output.length; i++){
+            long elem = 0;
+            for(int j = 0; j < 8; j++){
+                elem <<= 8;
+                int index = i * 8 + j;
+                if (index < input.length) {
+                    elem |= (input[index] & 0xFF);
+                }
+            }
+            output[i] = elem;
+        }
+        return output;
+    }
+
+    long stringToLong(String input){
+        byte[] inputBytes = input.getBytes();
+        long output = 0;
+            for(int i = 0; i < 8; i++){
+                output <<= 8;
+                if (i < inputBytes.length) {
+                    output |= (inputBytes[i] & 0xFF);
+                }
+        }
+        return output;
+    }
+
+    long bytesToLong(byte[] inputBytes){
+        long output = 0;
+        for(int i = 0; i < 8; i++){
+            output <<= 8;
+            if (i < inputBytes.length) {
+                output |= (inputBytes[i] & 0xFF);
+            }
+        }
+        return output;
+    }
+    byte[] longToBytes(long input){
+        byte[] output = new byte[8];
+        for (int i = 7; i >= 0; i--) {
+            output[i] = (byte)(input & 0xFF);
+            input >>= 8;
+        }
+        return output;
+    }
+
+    String longArrayToString(long[] input){
+        byte[] bytes = new byte[input.length * 8];
+        for (int i = 0; i < input.length; i++) {
+            long arrayElement = input[i];
+            for (int j = 7; j >= 0; j--) {
+                bytes[i * 8 + j] = (byte) (arrayElement & 0xFF);
+                arrayElement >>= 8;
+            }
+        }
+
+        String result = new String(bytes);
+        return result.replace("\0", "").trim();
+    }
+
+
+
+    long[] HexStringToLongArray(String input){
+        long[] output = new long[input.length() / 16];
+        for (int i = 0; i < output.length; i++) {
+            output[i] = Long.parseUnsignedLong(input.substring(i * 16, (i + 1) * 16), 16);
+        }
+        return output;
+    }
+
+
+
+
     public static void main(String[] args) {
         DESX desx = new DESX();
         long key = 0x133457799BBCDFF1L;
@@ -267,6 +327,17 @@ public class DESX {
         if (decipher == message) {
             System.out.println("Działa poprawnie");
         }
+
+        String text = "message";
+
+        long[] longArray = desx.stringToLongArray(text);
+        long[] longOutput = new long[longArray.length];
+        for (int i = 0; i < longArray.length; i++) {
+            long c = desx.DESXencrypt(longArray[i],subkeys,key2,key3);
+            long d = desx.DESXdecrypt(c,subkeys,key2,key3);
+            longOutput[i] = d;
+        }
+        System.out.println(desx.longArrayToString(longOutput));
     }
 
 }

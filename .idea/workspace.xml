@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e6a4ed08-3839-46ce-8005-d576769fe5bc" name="Changes" comment="removing unnecessary elements from the GUI and adding a few other bits for later">
+    <list default="true" id="e6a4ed08-3839-46ce-8005-d576769fe5bc" name="Changes" comment="Type conversion and encryption fixes - File encryption started.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DESX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DESX.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/GUIWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/GUIWindow.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -43,33 +44,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.AES.executor": "Run",
-    "Application.App.executor": "Run",
-    "Application.DESX.executor": "Run",
-    "Application.Main.executor": "Run",
-    "Application.Window.executor": "Run",
-    "JAR Application.Kryptografia-1.0-SNAPSHOT.jar.executor": "Run",
-    "JAR Application.Kryptografia-1.0.jar.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.WIDTH": "368",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "C:/Users/krzys/Documents/GitHub/Kryptografia/src/main/java/org/example/Main.java",
-    "settings.editor.selected.configurable": "preferences.pluginManager",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.AES.executor&quot;: &quot;Run&quot;,
+    &quot;Application.App.executor&quot;: &quot;Run&quot;,
+    &quot;Application.DESX.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.Window.executor&quot;: &quot;Run&quot;,
+    &quot;JAR Application.Kryptografia-1.0-SNAPSHOT.jar.executor&quot;: &quot;Run&quot;,
+    &quot;JAR Application.Kryptografia-1.0.jar.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;UI_DESIGNER_EDITOR_MODE.UIDesignerToolWindowManager.WIDTH&quot;: &quot;368&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/krzys/Documents/GitHub/Kryptografia/src/main/java/org/example/Main.java&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\Kornel\Documents\GitHub\Kryptografia\src\main\java\org\example" />
@@ -145,7 +146,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
       </set>
     </attachedChunks>
   </component>
@@ -168,6 +170,7 @@
       <workItem from="1775987514778" duration="693000" />
       <workItem from="1775988233590" duration="4370000" />
       <workItem from="1775992668004" duration="1280000" />
+      <workItem from="1776022089355" duration="10012000" />
     </task>
     <task id="LOCAL-00001" summary="First parts of the DES algorithm encryption">
       <option name="closed" value="true" />
@@ -209,7 +212,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776019106613</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="starting work on DESX file encryption/decryption">
+      <option name="closed" value="true" />
+      <created>1776021961599</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1776021961599</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -233,6 +244,8 @@
     <MESSAGE value="DES Decryption and DESX implementation" />
     <MESSAGE value="DESX keygen and DESX Encryption in GUI" />
     <MESSAGE value="removing unnecessary elements from the GUI and adding a few other bits for later" />
-    <option name="LAST_COMMIT_MESSAGE" value="removing unnecessary elements from the GUI and adding a few other bits for later" />
+    <MESSAGE value="starting work on DESX file encryption/decryption" />
+    <MESSAGE value="Type conversion and encryption fixes - File encryption started." />
+    <option name="LAST_COMMIT_MESSAGE" value="Type conversion and encryption fixes - File encryption started." />
   </component>
 </project>
