@@ -50,8 +50,8 @@ public class GUIWindow extends JFrame {
                 }
 
                 long key1 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 0, 8));
-                long key2 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 9, 16));
-                long key3 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 17, 24));
+                long key2 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 8, 16));
+                long key3 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 16, 24));
 
 
 
@@ -108,45 +108,88 @@ public class GUIWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
+                    String fullKey = keyOutputPanel.getText();
+                    if (fullKey.length() < 48) {
+                        logsLabel.setText("Błąd: Wygeneruj najpierw klucz!");
+                        return;
+                    }
+                    long key1 = desx.stringToLong(fullKey.substring(0, 16));
+                    long key2 = desx.stringToLong(fullKey.substring(16, 32));
+                    long key3 = desx.stringToLong(fullKey.substring(32, 48));
+
                     byte[] inputBytes = Files.readAllBytes(Path.of(inputFileTextField.getText()));
-                    long key1 = desx.stringToLong(keyOutputPanel.getText().substring(0,16));
-                    long key2 = desx.stringToLong(keyOutputPanel.getText().substring(16,32));
-                    long key3 = desx.stringToLong(keyOutputPanel.getText().substring(32,48));
                     long[] message = desx.bytesToLongArray(inputBytes);
                     long[] output = new long[message.length];
-                    for(int i = 0; i < message.length; i++) {
-                        long encrypted = desx.DESXencrypt(message[i],desx.generateSubkeys(key2),key1,key3);
-                        output[i]=encrypted;
+
+                    long[] subkeys = desx.generateSubkeys(key2);
+                    for (int i = 0; i < message.length; i++) {
+                        output[i] = desx.DESXencrypt(message[i], subkeys, key1, key3);
                     }
-                    byte[] encryptedBytes = new byte[output.length*8];
-                    for(int i = 0; i < output.length; i++) {
-                        byte[] byteRow = desx.longToBytes(output[i]);
-                        for(int j = 0; j < 8; j++) {
-                            encryptedBytes[j] = byteRow[j];
-                        }
+
+                    byte[] encryptedBytes = new byte[output.length * 8];
+                    for (int i = 0; i < output.length; i++) {
+                        byte[] tempBytes = desx.longToBytes(output[i]);
+                        System.arraycopy(tempBytes, 0, encryptedBytes, i * 8, 8);
                     }
-                    JFileChooser fileSearch = new JFileChooser();
-                    int selected = fileSearch.showSaveDialog(null);
-                    if (selected == JFileChooser.APPROVE_OPTION) {
-                        outputTextField.setText(fileSearch.getSelectedFile().getAbsolutePath());
-                        Files.write(Path.of(outputFileTextField.getText()), encryptedBytes);
-                        logsLabel.setText("Saved in" + fileSearch.getSelectedFile().getAbsolutePath());
+
+                    JFileChooser fileChooser = new JFileChooser();
+                    if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                        File targetFile = fileChooser.getSelectedFile();
+                        Files.write(targetFile.toPath(), encryptedBytes);
+                        outputFileTextField.setText(targetFile.getAbsolutePath());
+                        logsLabel.setText("Zaszyfrowano i zapisano: " + targetFile.getName());
                     }
-                    //TODO: ZAPIS JESZCZE NIE DZIAŁA
 
-
-
-
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+                } catch (Exception ex) {
+                    logsLabel.setText("Błąd: " + ex.getMessage());
+                    ex.printStackTrace();
                 }
-
             }
         });
+
         fileDecipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                try {
+                    String fullKey = keyOutputPanel.getText();
+                    long key1 = desx.stringToLong(fullKey.substring(0, 16));
+                    long key2 = desx.stringToLong(fullKey.substring(16, 32));
+                    long key3 = desx.stringToLong(fullKey.substring(32, 48));
 
+                    Path inputPath = Path.of(inputFileTextField.getText());
+                    byte[] inputBytes = Files.readAllBytes(inputPath);
+
+                    long[] message = desx.bytesToLongArray(inputBytes);
+                    long[] output = new long[message.length];
+                    long[] subkeys = desx.generateSubkeys(key2);
+
+                    for(int i = 0; i < message.length; i++) {
+                        output[i] = desx.DESXdecrypt(message[i], subkeys, key1, key3);
+                    }
+
+                    byte[] decryptedBytes = new byte[output.length * 8];
+                    for(int i = 0; i < output.length; i++) {
+                        byte[] tempBytes = desx.longToBytes(output[i]);
+                        System.arraycopy(tempBytes, 0, decryptedBytes, i * 8, 8);
+                    }
+
+                    int realLength = decryptedBytes.length;
+                    while (realLength > 0 && decryptedBytes[realLength - 1] == 0) {
+                        realLength--;
+                    }
+
+                    byte[] finalBytes = new byte[realLength];
+                    System.arraycopy(decryptedBytes, 0, finalBytes, 0, realLength);
+
+                    JFileChooser fileChooser = new JFileChooser();
+                    if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                        Files.write(fileChooser.getSelectedFile().toPath(), finalBytes);
+                        logsLabel.setText("Odszyfrowano PNG poprawnie.");
+                    }
+
+                } catch (Exception ex) {
+                    logsLabel.setText("Błąd: " + ex.getMessage());
+                }
             }
         });
         fileSearchButton.addActionListener(new ActionListener() {

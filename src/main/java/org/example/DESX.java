@@ -184,8 +184,6 @@ public class DESX {
         return keyed1;
     };
 
-
-
     public long DESdecrypt(long message, long[] subkeys){
         long block = permute(message, initPermTable,64);
 
@@ -200,19 +198,6 @@ public class DESX {
         long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
         return permute(combined, inverseInitPermTable,64);
     };
-
-
-    byte[] XORInputs(byte[] a, byte[] b){
-        if(a.length!=b.length){
-            throw new IllegalArgumentException();
-        }
-        byte[] result = new byte[a.length];
-        for(int i=0;i<a.length;i++){
-            result[i]= (byte) (a[i] ^ b[i]);
-        }
-        return result;
-
-    }
 
     long[] stringToLongArray(String input){
         byte[] inputBytes = input.getBytes();
@@ -294,50 +279,12 @@ public class DESX {
         return result.replace("\0", "").trim();
     }
 
-
-
     long[] HexStringToLongArray(String input){
         long[] output = new long[input.length() / 16];
         for (int i = 0; i < output.length; i++) {
             output[i] = Long.parseUnsignedLong(input.substring(i * 16, (i + 1) * 16), 16);
         }
         return output;
-    }
-
-
-
-
-    public static void main(String[] args) {
-        DESX desx = new DESX();
-        long key = 0x133457799BBCDFF1L;
-        long key2 = 0x133457799BBCDFF1L;
-        long key3 = 0x133457799BBCDFF1L;
-        long message = 0x0123456789ABCDEFL;
-
-        System.out.println("Klucz:       " + Long.toHexString(key).toUpperCase());
-        System.out.println("Dane:        " + Long.toHexString(message).toUpperCase());
-
-        long[] subkeys = desx.generateSubkeys(key);
-
-        long cipher = desx.DESXencrypt(message, subkeys,key2,key3);
-
-        System.out.println("Szyfrogram:  " + Long.toHexString(cipher).toUpperCase());
-        long decipher = desx.DESXdecrypt(cipher, subkeys,key2,key3);
-        System.out.println("Odszyfrowana wiadomość:  " + Long.toHexString(decipher).toUpperCase());
-        if (decipher == message) {
-            System.out.println("Działa poprawnie");
-        }
-
-        String text = "message";
-
-        long[] longArray = desx.stringToLongArray(text);
-        long[] longOutput = new long[longArray.length];
-        for (int i = 0; i < longArray.length; i++) {
-            long c = desx.DESXencrypt(longArray[i],subkeys,key2,key3);
-            long d = desx.DESXdecrypt(c,subkeys,key2,key3);
-            longOutput[i] = d;
-        }
-        System.out.println(desx.longArrayToString(longOutput));
     }
 
 }

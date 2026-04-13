@@ -6,6 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="e6a4ed08-3839-46ce-8005-d576769fe5bc" name="Changes" comment="Type conversion and encryption fixes - File encryption started.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DESX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DESX.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/GUIWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/GUIWindow.java" afterDir="false" />
     </list>
@@ -146,8 +147,7 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
       </set>
     </attachedChunks>
   </component>
