@@ -8,6 +8,11 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+// Autorzy:
+//
+// Krzysztof Dunajski - 254744
+// Kornel Komorowski - 254783
+
 public class GUIWindow extends JFrame {
     private JPanel Logs;
     private JPanel MainPanel;
@@ -35,11 +40,15 @@ public class GUIWindow extends JFrame {
 
     public GUIWindow() {
         DESX desx = new DESX();
-
+        // Generowanie klucza w oparciu o podany tekst (lub jego brak)
         generateKeyButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String inputText = uniqueKeyPanel.getText();
+                if(inputText.equals("")) {
+                    inputText= String.valueOf(Math.random());
+
+                }
                 byte[] byteText = inputText.getBytes();
                 byte[] keyBytes = new byte[24];
                 for (int i = 0; i < byteText.length && i < 24; i++) {
@@ -63,10 +72,14 @@ public class GUIWindow extends JFrame {
                 else {logsLabel.setText("Keygen failed.");}
             }
         });
-
+        // Szyfrowanie tekstu
         cipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                if(keyOutputPanel.getText().isEmpty()){
+                    logsLabel.setText("Błąd: Wygeneruj najpierw klucz!");
+                    return;
+                }
 
                 long key1 = desx.stringToLong(keyOutputPanel.getText().substring(0,16));
                 long key2 =desx.stringToLong(keyOutputPanel.getText().substring(16,32));
@@ -88,9 +101,15 @@ public class GUIWindow extends JFrame {
 
             }
         });
+        // Deszyfrowywanie tekstu
         decipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+
+                if(keyOutputPanel.getText().isEmpty()){
+                    logsLabel.setText("Błąd: Wygeneruj umieść klucz");
+                    return;
+                }
                 long key1 = desx.stringToLong(keyOutputPanel.getText().substring(0,16));
                 long key2 = desx.stringToLong(keyOutputPanel.getText().substring(16,32));
                 long key3 = desx.stringToLong(keyOutputPanel.getText().substring(32,48));
@@ -104,6 +123,7 @@ public class GUIWindow extends JFrame {
                 outputTextField.setText(desx.longArrayToString(output));
             }
         });
+        // Szyfrowanie pliku binarnego
         fileCipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -146,12 +166,17 @@ public class GUIWindow extends JFrame {
                 }
             }
         });
-
+        // Deszyfrowywanie pliku binarnego
         fileDecipherButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 try {
                     String fullKey = keyOutputPanel.getText();
+                    if (fullKey.length() < 48) {
+                        logsLabel.setText("Błąd: Wygeneruj najpierw klucz!");
+                        return;
+                    }
+
                     long key1 = desx.stringToLong(fullKey.substring(0, 16));
                     long key2 = desx.stringToLong(fullKey.substring(16, 32));
                     long key3 = desx.stringToLong(fullKey.substring(32, 48));
@@ -192,6 +217,7 @@ public class GUIWindow extends JFrame {
                 }
             }
         });
+        // Wyszukiwanie pliku
         fileSearchButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

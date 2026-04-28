@@ -48,7 +48,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.AES.executor&quot;: &quot;Run&quot;,
-    &quot;Application.App.executor&quot;: &quot;Run&quot;,
+    &quot;Application.App.executor&quot;: &quot;Debug&quot;,
     &quot;Application.DESX.executor&quot;: &quot;Run&quot;,
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
     &quot;Application.Window.executor&quot;: &quot;Run&quot;,
@@ -147,7 +147,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26199.169" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
+        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
       </set>
     </attachedChunks>
   </component>
@@ -171,6 +172,8 @@
       <workItem from="1775988233590" duration="4370000" />
       <workItem from="1775992668004" duration="1280000" />
       <workItem from="1776022089355" duration="10012000" />
+      <workItem from="1777301413685" duration="44000" />
+      <workItem from="1777365403061" duration="1111000" />
     </task>
     <task id="LOCAL-00001" summary="First parts of the DES algorithm encryption">
       <option name="closed" value="true" />

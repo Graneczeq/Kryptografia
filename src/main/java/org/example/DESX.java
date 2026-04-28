@@ -5,8 +5,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+// Autorzy:
+//
+// Krzysztof Dunajski - 254744
+// Kornel Komorowski - 254783
+
 public class DESX {
 
+    //Tablice wykorzystywane w programie
     static final int[] initPermTable = {
             58,	50,	42,	34,	26,	18,	10,	2,
             60,	52,	44,	36,	28,	20,	12,	4,
@@ -107,6 +113,8 @@ public class DESX {
     };
     private static final int[] iterations = { 1, 1, 2, 2, 2, 2, 2, 2, 1, 2, 2, 2, 2, 2, 2, 1 };
 
+
+    // Generowanie podkluczy wykorzystywanych w kolejnych rundach
     public long[] generateSubkeys(long key){
         long[] subkeys = new long[16];
 
@@ -152,6 +160,7 @@ public class DESX {
         return (int) permute(substituted & 0xFFFFFFFFL, permutationTable, 32);
     }
 
+    // Funkcja szyfrująca DES
     public long DESencrypt(long message, long[] subkeys){
         long block = permute(message, initPermTable,64);
 
@@ -166,7 +175,7 @@ public class DESX {
         long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
         return permute(combined, inverseInitPermTable,64);
     };
-
+    // Funkcja szyfrująca DESX
     public long DESXencrypt(long message, long[] subkeys, long key1, long key3){
 
         long keyed1 = message ^ key1;
@@ -175,6 +184,7 @@ public class DESX {
 
         return keyed3;
     };
+    // Funkcja deszyfrująca DESX
     public long DESXdecrypt(long message, long[] subkeys, long key1, long key3){
 
         long keyed3 = message ^ key3;
@@ -183,7 +193,7 @@ public class DESX {
 
         return keyed1;
     };
-
+    // Funkcja deszyfrująca DES
     public long DESdecrypt(long message, long[] subkeys){
         long block = permute(message, initPermTable,64);
 
@@ -198,7 +208,7 @@ public class DESX {
         long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
         return permute(combined, inverseInitPermTable,64);
     };
-
+    // Funkcja dzieląca String (tekst wejściowy) i konwertująca go na tablicę zmiennych long
     long[] stringToLongArray(String input){
         byte[] inputBytes = input.getBytes();
         long[] output = new long[(input.length()+7)/8];
@@ -216,7 +226,7 @@ public class DESX {
         }
         return output;
     }
-
+    // Funkcja konwertująca tablicę bajtów na tablicę longów
     long[] bytesToLongArray(byte[] input){
         long[] output = new long[(input.length+7)/8];
 
@@ -233,7 +243,7 @@ public class DESX {
         }
         return output;
     }
-
+    // Funkcja konwertująca string do longa (wykorzystywana głównie przy kluczach)
     long stringToLong(String input){
         byte[] inputBytes = input.getBytes();
         long output = 0;
@@ -245,7 +255,7 @@ public class DESX {
         }
         return output;
     }
-
+    // Funkcja konwertująca tablicę bajtów do longa
     long bytesToLong(byte[] inputBytes){
         long output = 0;
         for(int i = 0; i < 8; i++){
@@ -256,6 +266,7 @@ public class DESX {
         }
         return output;
     }
+    // Funkcja konwertująca long do tablicy bajtów
     byte[] longToBytes(long input){
         byte[] output = new byte[8];
         for (int i = 7; i >= 0; i--) {
@@ -264,7 +275,7 @@ public class DESX {
         }
         return output;
     }
-
+    // Funkcja konwertująca tablicę zmiennych long do Stringa
     String longArrayToString(long[] input){
         byte[] bytes = new byte[input.length * 8];
         for (int i = 0; i < input.length; i++) {
@@ -278,7 +289,7 @@ public class DESX {
         String result = new String(bytes);
         return result.replace("\0", "").trim();
     }
-
+    // Funkcja konwertująca String z danymi zapisanymi w systemie szesnastkowym do tablicy zmiennych long
     long[] HexStringToLongArray(String input){
         long[] output = new long[input.length() / 16];
         for (int i = 0; i < output.length; i++) {
@@ -286,6 +297,7 @@ public class DESX {
         }
         return output;
     }
+
 
 }
 
