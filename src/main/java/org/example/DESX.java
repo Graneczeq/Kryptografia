@@ -211,14 +211,18 @@ public class DESX {
     // Funkcja dzieląca String (tekst wejściowy) i konwertująca go na tablicę zmiennych long
     long[] stringToLongArray(String input){
         byte[] inputBytes = input.getBytes();
+        // tworzymy tablicę longów o długości mieszczącej tablicę bajtów
         long[] output = new long[(input.length()+7)/8];
 
         for(int i = 0; i < output.length; i++){
             long elem = 0;
             for(int j = 0; j < 8; j++){
+                // robimy miejsce dla nowy bajt
                 elem <<= 8;
                 int index = i * 8 + j;
+
                 if (index < inputBytes.length) {
+                    // wstawiamy dane przy użyciu sumy bitowej i ustawiamy bajt jako wartość od 0 do 255
                     elem |= (inputBytes[index] & 0xFF);
                 }
             }
@@ -270,6 +274,7 @@ public class DESX {
     byte[] longToBytes(long input){
         byte[] output = new byte[8];
         for (int i = 7; i >= 0; i--) {
+            //wyciągamy tylko 8 najnowszych bitów, po czym wykonujemy przesunięcie bitowe by zwolnić miejsce
             output[i] = (byte)(input & 0xFF);
             input >>= 8;
         }
@@ -287,7 +292,8 @@ public class DESX {
         }
 
         String result = new String(bytes);
-        return result.replace("\0", "").trim();
+        // usuwa wypełniające zera
+        return result.replace("\0", "");
     }
     // Funkcja konwertująca String z danymi zapisanymi w systemie szesnastkowym do tablicy zmiennych long
     long[] HexStringToLongArray(String input){

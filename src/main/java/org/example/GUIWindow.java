@@ -45,19 +45,23 @@ public class GUIWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String inputText = uniqueKeyPanel.getText();
+
+                // jeśli input jest pusty, wrzuć tam losową wartość double od 0 do 1
                 if(inputText.equals("")) {
                     inputText= String.valueOf(Math.random());
 
                 }
                 byte[] byteText = inputText.getBytes();
                 byte[] keyBytes = new byte[24];
+                // kopiowanie danych do tablicy keyBytes
                 for (int i = 0; i < byteText.length && i < 24; i++) {
                     keyBytes[i] = byteText[i];
                 }
+
                 for (int i = byteText.length; i < 24; i++) {
                     keyBytes[i] = (byte) (byteText[i % byteText.length] ^ (i * 31));
                 }
-
+                //podział na podklucze
                 long key1 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 0, 8));
                 long key2 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 8, 16));
                 long key3 = desx.bytesToLong(Arrays.copyOfRange(keyBytes, 16, 24));

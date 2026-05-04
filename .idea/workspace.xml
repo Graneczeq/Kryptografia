@@ -4,9 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e6a4ed08-3839-46ce-8005-d576769fe5bc" name="Changes" comment="Type conversion and encryption fixes - File encryption started.">
+    <list default="true" id="e6a4ed08-3839-46ce-8005-d576769fe5bc" name="Changes" comment="Additional comments and prepping for release">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/org/example/App.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/App.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/DESX.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/DESX.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/org/example/GUIWindow.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/org/example/GUIWindow.java" afterDir="false" />
     </list>
@@ -48,7 +47,7 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Application.AES.executor&quot;: &quot;Run&quot;,
-    &quot;Application.App.executor&quot;: &quot;Debug&quot;,
+    &quot;Application.App.executor&quot;: &quot;Run&quot;,
     &quot;Application.DESX.executor&quot;: &quot;Run&quot;,
     &quot;Application.Main.executor&quot;: &quot;Run&quot;,
     &quot;Application.Window.executor&quot;: &quot;Run&quot;,
@@ -173,7 +172,9 @@
       <workItem from="1775992668004" duration="1280000" />
       <workItem from="1776022089355" duration="10012000" />
       <workItem from="1777301413685" duration="44000" />
-      <workItem from="1777365403061" duration="1111000" />
+      <workItem from="1777365403061" duration="3033000" />
+      <workItem from="1777370814310" duration="309000" />
+      <workItem from="1777902886905" duration="419000" />
     </task>
     <task id="LOCAL-00001" summary="First parts of the DES algorithm encryption">
       <option name="closed" value="true" />
@@ -223,7 +224,15 @@
       <option name="project" value="LOCAL" />
       <updated>1776021961599</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Additional comments and prepping for release">
+      <option name="closed" value="true" />
+      <created>1777366779078</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1777366779078</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -249,6 +258,7 @@
     <MESSAGE value="removing unnecessary elements from the GUI and adding a few other bits for later" />
     <MESSAGE value="starting work on DESX file encryption/decryption" />
     <MESSAGE value="Type conversion and encryption fixes - File encryption started." />
-    <option name="LAST_COMMIT_MESSAGE" value="Type conversion and encryption fixes - File encryption started." />
+    <MESSAGE value="Additional comments and prepping for release" />
+    <option name="LAST_COMMIT_MESSAGE" value="Additional comments and prepping for release" />
   </component>
 </project>
