@@ -1,9 +1,11 @@
 package org.example;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+// Autorzy:
+//
+// Krzysztof Dunajski - 254744
+// Kornel Komorowski - 254783
 
 public class DESX {
 
@@ -151,7 +153,6 @@ public class DESX {
 
         return (int) permute(substituted & 0xFFFFFFFFL, permutationTable, 32);
     }
-
     public long DESencrypt(long message, long[] subkeys){
         long block = permute(message, initPermTable,64);
 
@@ -166,7 +167,6 @@ public class DESX {
         long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
         return permute(combined, inverseInitPermTable,64);
     };
-
     public long DESXencrypt(long message, long[] subkeys, long key1, long key3){
 
         long keyed1 = message ^ key1;
@@ -183,7 +183,6 @@ public class DESX {
 
         return keyed1;
     };
-
     public long DESdecrypt(long message, long[] subkeys){
         long block = permute(message, initPermTable,64);
 
@@ -198,54 +197,52 @@ public class DESX {
         long combined = ((long) right << 32) | (left & 0xFFFFFFFFL);
         return permute(combined, inverseInitPermTable,64);
     };
-
     long[] stringToLongArray(String input){
         byte[] inputBytes = input.getBytes();
-        long[] output = new long[(input.length()+7)/8];
+        int blockSize = 8;
 
-        for(int i = 0; i < output.length; i++){
+        int paddingLen = blockSize - (inputBytes.length % blockSize);
+
+        byte[] paddedBytes = new byte[inputBytes.length + paddingLen];
+        System.arraycopy(inputBytes, 0, paddedBytes, 0, inputBytes.length);
+
+        for (int i = inputBytes.length; i < paddedBytes.length; i++) {
+            paddedBytes[i] = (byte) paddingLen;
+        }
+
+        long[] output = new long[paddedBytes.length / 8];
+        for (int i = 0; i < output.length; i++) {
             long elem = 0;
-            for(int j = 0; j < 8; j++){
+            for (int j = 0; j < 8; j++) {
                 elem <<= 8;
-                int index = i * 8 + j;
-                if (index < inputBytes.length) {
-                    elem |= (inputBytes[index] & 0xFF);
-                }
+                elem |= (paddedBytes[i * 8 + j] & 0xFF);
             }
             output[i] = elem;
         }
         return output;
     }
-
     long[] bytesToLongArray(byte[] input){
-        long[] output = new long[(input.length+7)/8];
+        int blockSize = 8;
+        int paddingLen = blockSize - (input.length % blockSize);
 
-        for(int i = 0; i < output.length; i++){
+        byte[] paddedBytes = new byte[input.length + paddingLen];
+        System.arraycopy(input, 0, paddedBytes, 0, input.length);
+
+        for (int i = input.length; i < paddedBytes.length; i++) {
+            paddedBytes[i] = (byte) paddingLen;
+        }
+
+        long[] output = new long[paddedBytes.length / 8];
+        for (int i = 0; i < output.length; i++) {
             long elem = 0;
-            for(int j = 0; j < 8; j++){
+            for (int j = 0; j < 8; j++) {
                 elem <<= 8;
-                int index = i * 8 + j;
-                if (index < input.length) {
-                    elem |= (input[index] & 0xFF);
-                }
+                elem |= (paddedBytes[i * 8 + j] & 0xFF);
             }
             output[i] = elem;
         }
         return output;
     }
-
-    long stringToLong(String input){
-        byte[] inputBytes = input.getBytes();
-        long output = 0;
-            for(int i = 0; i < 8; i++){
-                output <<= 8;
-                if (i < inputBytes.length) {
-                    output |= (inputBytes[i] & 0xFF);
-                }
-        }
-        return output;
-    }
-
     long bytesToLong(byte[] inputBytes){
         long output = 0;
         for(int i = 0; i < 8; i++){
@@ -264,7 +261,6 @@ public class DESX {
         }
         return output;
     }
-
     String longArrayToString(long[] input){
         byte[] bytes = new byte[input.length * 8];
         for (int i = 0; i < input.length; i++) {
@@ -275,10 +271,13 @@ public class DESX {
             }
         }
 
-        String result = new String(bytes);
-        return result.replace("\0", "").trim();
-    }
+        int paddingLen = bytes[bytes.length - 1] & 0xFF;
 
+        if (paddingLen >= 1 && paddingLen <= 8) {
+            return new String(bytes, 0, bytes.length - paddingLen);
+        }
+        return new String(bytes);
+    }
     long[] HexStringToLongArray(String input){
         long[] output = new long[input.length() / 16];
         for (int i = 0; i < output.length; i++) {
@@ -286,6 +285,19 @@ public class DESX {
         }
         return output;
     }
+    long[] bytesToLongArrayNoPadding(byte[] input) {
+        long[] output = new long[input.length / 8];
+        for (int i = 0; i < output.length; i++) {
+            long elem = 0;
+            for (int j = 0; j < 8; j++) {
+                elem <<= 8;
+                elem |= (input[i * 8 + j] & 0xFF);
+            }
+            output[i] = elem;
+        }
+        return output;
+    }
+
 
 }
 
